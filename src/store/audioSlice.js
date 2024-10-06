@@ -1,39 +1,49 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-    audioFiles: [],
-    loading: false,
-    currentAudioIndex: 0,  // State for the index of the selected audio
-    isPlaying: true, // Start playing by default
-};
-
 const audioSlice = createSlice({
     name: 'audio',
-    initialState,
+    initialState: {
+        audioFiles: [],
+        loading: false,
+        currentAudioIndex: 0,
+        currentAudioTime: 0,
+        isPlaying: false,
+    },
     reducers: {
-        setAudioFiles: (state, action) => {
+        setAudioFiles(state, action) {
             state.audioFiles = action.payload;
         },
-        setLoading: (state, action) => {
+        setLoading(state, action) {
             state.loading = action.payload;
         },
-        setCurrentAudioIndex: (state, action) => {
+        setCurrentAudioIndex(state, action) {
             state.currentAudioIndex = action.payload;
         },
-        playPauseAudio: (state) => {
+        setCurrentAudioTime(state, action) {
+            state.currentAudioTime = action.payload;
+        },
+        playPauseAudio(state) {
             state.isPlaying = !state.isPlaying;
         },
-        nextAudio: (state) => {
+        nextAudio(state) {
             state.currentAudioIndex = (state.currentAudioIndex + 1) % state.audioFiles.length;
         },
-        prevAudio: (state) => {
+        prevAudio(state) {
             state.currentAudioIndex = (state.currentAudioIndex - 1 + state.audioFiles.length) % state.audioFiles.length;
-        },
-        autoPlayNextAudio: (state) => {
-            state.currentAudioIndex = (state.currentAudioIndex + 1) % state.audioFiles.length;
         },
     },
 });
 
-export const { setAudioFiles, setLoading, setCurrentAudioIndex, playPauseAudio, nextAudio, prevAudio, autoPlayNextAudio } = audioSlice.actions;
+// Export actions
+export const {
+    setAudioFiles,
+    setLoading,
+    setCurrentAudioIndex,
+    setCurrentAudioTime,
+    playPauseAudio,
+    nextAudio,
+    prevAudio,
+} = audioSlice.actions;
+
+// Export reducer
 export default audioSlice.reducer;

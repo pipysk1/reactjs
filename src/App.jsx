@@ -1,20 +1,21 @@
-import DetailSong from "./components/DetailSong"
-import ListSong from "./components/ListSong"
-import Navbar from "./components/Navbar"
-import Player from "./components/Player"
+// src/App.js
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
+import Detail from './pages/Detail';
 
-function App() {
-
+const App = () => {
   return (
-    <div className="">
-      <Navbar />
-      <div className="grid grid-cols-3 h-screen-navbar-player bg-slate-400">
-        <DetailSong />
-        <ListSong />
+    <Router>
+      <div className="">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/detail" element={<Detail />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
       </div>
-      <Player />
-    </div>
-  )
-}
+    </Router>
+  );
+};
 
-export default App
+export default App;

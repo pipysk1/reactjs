@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAudioFiles, setLoading, setCurrentAudioIndex } from '../store/audioSlice';
+import { setAudioFiles, setLoading, setCurrentAudioIndex, setCurrentAudioTime } from '../store/audioSlice';
 
 const ListSong = () => {
     const dispatch = useDispatch();
     const audioFiles = useSelector((state) => state.audio.audioFiles);
     const loading = useSelector((state) => state.audio.loading);
+    const currentAudioIndex = useSelector((state) => state.audio.currentAudioIndex);
 
     useEffect(() => {
         const fetchAudioFiles = async () => {
@@ -19,14 +20,14 @@ const ListSong = () => {
                     .map((file, index) => ({
                         url: `https://archive.org/download/DeBaTH/${file.name}`,
                         title: `Tập ${file.name.match(/^\d+/)[0].padStart(3, '0')}`,
-                        author: "Unknown",  // You can replace this with the actual author if available
-                        index: index + 1  // Keep track of the file number
+                        author: "Unknown",  // Replace with actual author if available
+                        index: index + 1  // Track the file number
                     }));
 
                 dispatch(setAudioFiles(formattedSources));
-                dispatch(setLoading(false));
             } catch (error) {
                 console.error('Error fetching audio files:', error);
+            } finally {
                 dispatch(setLoading(false));
             }
         };
@@ -34,9 +35,9 @@ const ListSong = () => {
         fetchAudioFiles();
     }, [dispatch]);
 
-    const handlePlayAudio = (audio) => {
-        console.log(audio);
-        dispatch(setCurrentAudioIndex(audio));  // Set the selected audio in Redux
+    const handlePlayAudio = (audioIndex) => {
+        dispatch(setCurrentAudioIndex(audioIndex));  // Set the selected audio in Redux
+        dispatch(setCurrentAudioTime(0)); // Reset time to 0 when a new audio is selected
     };
 
     if (loading) {
@@ -55,10 +56,16 @@ const ListSong = () => {
                 </thead>
                 <tbody className="mt-4 h-full text-white">
                     {audioFiles.map((file) => (
-                        <tr key={file.index} className="hover:bg-gray-700 cursor-pointer">
+                        <tr
+                            key={file.index}
+                            className={`hover:bg-gray-700 cursor-pointer ${currentAudioIndex === file.index ? 'bg-gray-600' : ''}`} // Highlight current audio
+                        >
                             <td className="text-center">{file.index}</td>
                             <td>
-                                <a onClick={() => handlePlayAudio(file)} className="text-blue-400 underline cursor-pointer">
+                                <a
+                                    onClick={() => handlePlayAudio(file.index)} // Pass only the index
+                                    className="text-blue-400 underline cursor-pointer"
+                                >
                                     {file.title}
                                 </a>
                             </td>
